@@ -3,34 +3,32 @@
   "description": "Una app sencilla para contar cuántos cafés tomas al día, con un contador grande y botones para sumar y reiniciar.",
   "requirements": [
     {
-      "title": "Página de inicio",
-      "description": "Landing page principal con información del producto",
-      "priority": "alta"
+      "id": 1,
+      "title": "Contador de cafés con número grande",
+      "description": "La app muestra un número grande y visible en el centro de la pantalla que indica cuántos cafés has tomado hoy.",
+      "type": "feature",
+      "priority": "high"
     },
     {
-      "title": "Autenticación de usuarios",
-      "description": "Login y registro con validación de formularios",
-      "priority": "alta"
+      "id": 2,
+      "title": "Botón para sumar café (+)",
+      "description": "Un botón con el símbolo \"+\" que al pulsarlo suma 1 al contador de cafés.",
+      "type": "feature",
+      "priority": "high"
     },
     {
-      "title": "Panel de administración",
-      "description": "Dashboard para gestionar los datos de la aplicación",
-      "priority": "media"
+      "id": 3,
+      "title": "Botón para reiniciar (reset)",
+      "description": "Un botón \"reset\" que pone el contador a cero para empezar un nuevo día.",
+      "type": "feature",
+      "priority": "high"
     },
     {
-      "title": "API REST completa",
-      "description": "Endpoints CRUD para todas las entidades del dominio",
-      "priority": "alta"
-    },
-    {
-      "title": "Diseño responsive",
-      "description": "Interfaz adaptada a móvil, tablet y escritorio",
-      "priority": "media"
-    },
-    {
-      "title": "Tests unitarios",
-      "description": "Cobertura de tests para la lógica de negocio principal",
-      "priority": "baja"
+      "id": 4,
+      "title": "Diseño sencillo con colores marrones",
+      "description": "La app tiene un estilo minimalista y limpio, usando tonos marrones como los del café (marrón oscuro, crema, beige).",
+      "type": "ui",
+      "priority": "high"
     }
   ]
 }
