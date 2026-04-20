@@ -1,0 +1,68 @@
+# Docker Compose for LOCAL DEVELOPMENT and IdeaForge runner.
+#
+# Architecture:
+#   - file-receiver: HTTP sidecar (port 3001) that drops files and runs
+#     commands inside the shared named volumes. This is how the IdeaForge
+#     server pushes source code into the running containers without needing
+#     host filesystem access (so it works on Azure Container Apps too).
+#   - frontend: Vite dev server, source code lives in the `app-frontend`
+#     named volume (written by file-receiver).
+#   - backend: Spring Boot dev server, source code lives in the `app-backend`
+#     named volume. Optional — only starts under the `backend` profile so
+#     templates without a Java backend can run frontend-only.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d                 # frontend only
+#   docker compose -f docker-compose.dev.yml --profile backend up  # full stack
+#
+# Requires: Docker (no Java or Node.js needed on the host).
+
+services:
+  file-receiver:
+    build:
+      context: ./file-receiver
+    ports:
+      - "3001:3001"
+    volumes:
+      - app-frontend:/app/frontend
+      - app-backend:/app/backend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - app-frontend:/app
+      # Anonymous volume keeps the image's pre-installed node_modules from
+      # being shadowed by the empty/synced app-frontend volume.
+      - /app/node_modules
+    depends_on:
+      - file-receiver
+    restart: unless-stopped
+
+  backend:
+    profiles: ["backend"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount the whole project (not just /src) so pom.xml lands at /app/pom.xml
+      # where mvn expects it. The file-receiver writes into the same volume at
+      # /app/backend/* on its side, which appears here as /app/*.
+      - app-backend:/app
+      # Anonymous volume preserves the image's pre-warmed Maven cache.
+      - /root/.m2
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      - file-receiver
+    restart: unless-stopped
+
+volumes:
+  app-frontend:
+  app-backend:

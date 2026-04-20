@@ -1,0 +1,36 @@
+{
+  "appName": "Contador de Cafés",
+  "description": "Una app sencilla para contar cuántos cafés tomas al día, con un contador grande y botones para sumar y reiniciar.",
+  "requirements": [
+    {
+      "title": "Página de inicio",
+      "description": "Landing page principal con información del producto",
+      "priority": "alta"
+    },
+    {
+      "title": "Autenticación de usuarios",
+      "description": "Login y registro con validación de formularios",
+      "priority": "alta"
+    },
+    {
+      "title": "Panel de administración",
+      "description": "Dashboard para gestionar los datos de la aplicación",
+      "priority": "media"
+    },
+    {
+      "title": "API REST completa",
+      "description": "Endpoints CRUD para todas las entidades del dominio",
+      "priority": "alta"
+    },
+    {
+      "title": "Diseño responsive",
+      "description": "Interfaz adaptada a móvil, tablet y escritorio",
+      "priority": "media"
+    },
+    {
+      "title": "Tests unitarios",
+      "description": "Cobertura de tests para la lógica de negocio principal",
+      "priority": "baja"
+    }
+  ]
+}

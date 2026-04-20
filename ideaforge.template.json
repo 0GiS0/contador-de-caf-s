@@ -1,0 +1,47 @@
+{
+  "name": "spring-vue-fullstack",
+  "description": "Full-stack template with Spring Boot 3 backend and Vue 3 frontend",
+  "version": "1.1.0",
+  "placeholderFormat": "__PLACEHOLDER_NAME__",
+  "placeholders": {
+    "APP_NAME": {
+      "description": "Application display name (e.g. Mesa Reserva)",
+      "placeholder": "Contador de Cafés",
+      "example": "Mesa Reserva"
+    },
+    "APP_NAME_KEBAB": {
+      "description": "Kebab-case name for repos and folders (e.g. mesa-reserva)",
+      "placeholder": "contador-de-caf-s",
+      "transform": "kebab-case"
+    },
+    "APP_NAME_PASCAL": {
+      "description": "PascalCase name for Java classes (e.g. MesaReserva)",
+      "placeholder": "ContadorDeCafs",
+      "transform": "pascal-case"
+    },
+    "APP_DESCRIPTION": {
+      "description": "Short description of the application",
+      "placeholder": "Una app sencilla para contar cuántos cafés tomas al día, con un contador grande y botones para sumar y reiniciar.",
+      "example": "Restaurant reservation management app"
+    },
+    "PACKAGE_NAME": {
+      "description": "Java package name (e.g. com.ideaforge.mesareserva)",
+      "placeholder": "com.ideaforge.contadordecafs",
+      "transform": "java-package"
+    }
+  },
+  "structure": {
+    "backend": {
+      "type": "spring-boot",
+      "javaVersion": "21",
+      "springBootVersion": "3.3.0",
+      "port": 8080
+    },
+    "frontend": {
+      "type": "vue3",
+      "nodeVersion": "20",
+      "port": 5173,
+      "features": ["typescript", "pinia", "vue-router", "tailwindcss"]
+    }
+  }
+}
