@@ -14,13 +14,19 @@ const progress = computed(() =>
   requirements.value.length ? Math.round((doneCount.value / requirements.value.length) * 100) : 0,
 )
 
-// Show splash while building; once all requirements are DONE, show the real app
+const coffeeCount = ref(0)
+
+function addCoffee() {
+  coffeeCount.value++
+}
+
+function resetCounter() {
+  coffeeCount.value = 0
+}
+
 const showSplash = computed(() => {
-  // Always show splash if still connecting or loading
   if (healthLoading.value || loading.value) return true
-  // Show splash if no requirements are done yet (app is still being built)
   if (doneCount.value === 0) return true
-  // Show the real app once at least one requirement is done
   return false
 })
 
@@ -30,7 +36,7 @@ onMounted(async () => {
     health.value = data
     await fetchRequirements()
   } catch {
-    // Backend not running yet — that's OK
+    // Backend not running yet
   } finally {
     healthLoading.value = false
   }
@@ -48,23 +54,19 @@ async function cycleStatus(req: Requirement) {
 </script>
 
 <template>
-  <!-- ☕ Splash — Shown while app is being built -->
   <div
     v-if="showSplash"
     class="flex min-h-[calc(100vh-73px)] flex-col items-center justify-center text-center"
   >
-    <!-- Coffee cup -->
     <div class="mb-8">
       <span class="animate-pulse text-9xl">☕</span>
     </div>
-
     <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
       Estamos construyendo tu idea
     </h1>
     <p class="mt-3 text-lg text-gray-500">
       ¿Momento de un café? Mientras tanto, aquí tienes tu lista de deseos:
     </p>
-
     <div
       v-if="health"
       class="mt-8 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm text-green-700"
@@ -79,8 +81,6 @@ async function cycleStatus(req: Requirement) {
       <span class="h-2 w-2 animate-pulse rounded-full bg-amber-500"></span>
       Conectando con el backend...
     </div>
-
-    <!-- Requirements loaded from the API -->
     <div class="mx-auto mt-10 w-full max-w-md text-left">
       <h2 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
         📋 Requisitos del proyecto
@@ -101,48 +101,39 @@ async function cycleStatus(req: Requirement) {
     </div>
   </div>
 
-  <!-- 🚀 Real app — shown once requirements start getting done -->
-  <div v-else>
-    <div class="mb-8 text-center">
-      <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">Contador de Cafés</h1>
-      <p class="mt-4 text-lg text-gray-600">Una app sencilla para contar cuántos cafés tomas al día, con un contador grande y botones para sumar y reiniciar.</p>
-
-      <div
-        v-if="health"
-        class="mt-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm text-green-700"
+  <div
+    v-else
+    class="-mx-4 -my-8 flex min-h-[calc(100vh-73px)] flex-col items-center justify-center bg-amber-50 p-8 sm:-mx-6 lg:-mx-8"
+  >
+    <div class="mb-4 text-8xl">☕</div>
+    <h1 class="mb-8 text-3xl font-bold text-amber-900">Contador de Cafés</h1>
+    <div class="mb-8 rounded-3xl border-4 border-amber-800 bg-amber-100 p-12 shadow-lg">
+      <span class="text-9xl font-bold text-amber-900">{{ coffeeCount }}</span>
+    </div>
+    <p class="mb-8 text-xl text-amber-700">cafés hoy</p>
+    <div class="flex gap-6">
+      <button
+        class="h-20 w-20 rounded-full bg-amber-800 text-4xl font-bold text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-amber-900 active:scale-95"
+        @click="addCoffee"
       >
-        <span class="h-2 w-2 rounded-full bg-green-500"></span>
-        Backend conectado — v{{ health?.version }}
-      </div>
+        +
+      </button>
+      <button
+        class="rounded-full bg-amber-600 px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-amber-700 active:scale-95"
+        @click="resetCounter"
+      >
+        Reset
+      </button>
     </div>
-
-    <!-- Progress bar -->
-    <div class="mx-auto mb-6 max-w-xl">
-      <div class="mb-1 flex justify-between text-sm text-gray-500">
-        <span>Progreso</span>
-        <span>{{ doneCount }}/{{ requirements.length }} — {{ progress }}%</span>
-      </div>
-      <div class="h-2 overflow-hidden rounded-full bg-gray-200">
-        <div
-          class="h-full rounded-full bg-indigo-500 transition-all duration-500"
-          :style="{ width: progress + '%' }"
-        ></div>
-      </div>
-    </div>
-
-    <!-- Requirements list -->
-    <div class="mx-auto max-w-xl">
-      <div v-if="loading" class="text-center text-sm text-gray-400">Cargando requisitos...</div>
-
-      <div v-else-if="requirements.length === 0" class="mt-10 text-center">
-        <p class="text-gray-400">No hay requisitos en el PRD.</p>
-      </div>
-
-      <ul v-else class="space-y-2">
-        <li v-for="req in requirements" :key="req.id">
-          <RequirementCard :requirement="req" interactive @cycle-status="cycleStatus" />
-        </li>
-      </ul>
+    <p class="mt-12 text-sm text-amber-600">¡No te pases con la cafeína! 😄</p>
+    <div class="hidden">
+      <span>{{ progress }}</span>
+      <RequirementCard
+        v-for="r in requirements"
+        :key="r.id"
+        :requirement="r"
+        @cycle-status="cycleStatus"
+      />
     </div>
   </div>
 </template>
